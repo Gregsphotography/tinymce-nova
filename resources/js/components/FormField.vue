@@ -58,14 +58,8 @@ export default {
         },
         
         initEditor() {
-            // Wait for any existing TinyMCE instances to be ready
-            if (tinymce.editors.length > 0) {
-                tinymce.on('AddEditor', () => {
-                    this.initSingleEditor();
-                });
-            } else {
-                this.initSingleEditor();
-            }
+            // Initialize the editor directly
+            this.initSingleEditor();
         },
 
         initSingleEditor() {
@@ -104,10 +98,8 @@ export default {
                 }
             };
             
-            // Check if editor already exists before initializing
-            if (!tinymce.get(this.uniqueId)) {
-                tinymce.init(config);
-            }
+            // Initialize the editor
+            tinymce.init(config);
         },
         
         destroyEditor() {

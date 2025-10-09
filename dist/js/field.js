@@ -67,18 +67,11 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     initEditor: function initEditor() {
-      var _this2 = this;
-      // Wait for any existing TinyMCE instances to be ready
-      if (tinymce.editors.length > 0) {
-        tinymce.on('AddEditor', function () {
-          _this2.initSingleEditor();
-        });
-      } else {
-        this.initSingleEditor();
-      }
+      // Initialize the editor directly
+      this.initSingleEditor();
     },
     initSingleEditor: function initSingleEditor() {
-      var _this3 = this;
+      var _this2 = this;
       var config = {
         selector: "#".concat(this.uniqueId),
         license_key: this.field.license_key || 'gpl',
@@ -100,24 +93,22 @@ __webpack_require__.r(__webpack_exports__);
         // Unique instance settings for multiple editors
         instance_id: this.uniqueId,
         init_instance_callback: function init_instance_callback(editor) {
-          _this3.editor = editor;
+          _this2.editor = editor;
           editor.on('change keyup paste', function () {
-            _this3.value = editor.getContent();
+            _this2.value = editor.getContent();
           });
         },
         setup: function setup(editor) {
           editor.on('init', function () {
-            if (_this3.value) {
-              editor.setContent(_this3.value);
+            if (_this2.value) {
+              editor.setContent(_this2.value);
             }
           });
         }
       };
 
-      // Check if editor already exists before initializing
-      if (!tinymce.get(this.uniqueId)) {
-        tinymce.init(config);
-      }
+      // Initialize the editor
+      tinymce.init(config);
     },
     destroyEditor: function destroyEditor() {
       if (this.editor) {
