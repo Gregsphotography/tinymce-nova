@@ -2,7 +2,7 @@
     <DefaultField :field="field" :errors="errors">
         <template #field>
             <textarea
-                :id="field.attribute"
+                :id="uniqueId"
                 :name="field.attribute"
                 :value="value"
                 @input="handleChange"
@@ -23,10 +23,13 @@ export default {
     data() {
         return {
             editor: null,
+            uniqueId: null,
         };
     },
 
     mounted() {
+        // Generate unique ID for this editor instance
+        this.uniqueId = `${this.field.attribute}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         this.initializeEditor();
     },
 
@@ -55,9 +58,20 @@ export default {
         },
         
         initEditor() {
+            // Wait for any existing TinyMCE instances to be ready
+            if (tinymce.editors.length > 0) {
+                tinymce.on('AddEditor', () => {
+                    this.initSingleEditor();
+                });
+            } else {
+                this.initSingleEditor();
+            }
+        },
+
+        initSingleEditor() {
             const config = {
-                selector: `#${this.field.attribute}`,
-                license_key: 'gpl',
+                selector: `#${this.uniqueId}`,
+                license_key: this.field.license_key || 'gpl',
                 height: this.field.height || 400,
                 toolbar: this.field.toolbar || 'undo redo | blocks | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | removeformat | code | fullscreen',
                 plugins: this.field.plugins || 'lists link image paste code table fullscreen wordcount',
@@ -73,6 +87,8 @@ export default {
                 relative_urls: false,
                 remove_script_host: false,
                 convert_urls: true,
+                // Unique instance settings for multiple editors
+                instance_id: this.uniqueId,
                 init_instance_callback: (editor) => {
                     this.editor = editor;
                     editor.on('change keyup paste', () => {
@@ -88,12 +104,15 @@ export default {
                 }
             };
             
-            tinymce.init(config);
+            // Check if editor already exists before initializing
+            if (!tinymce.get(this.uniqueId)) {
+                tinymce.init(config);
+            }
         },
         
         destroyEditor() {
             if (this.editor) {
-                tinymce.remove(`#${this.field.attribute}`);
+                tinymce.remove(`#${this.uniqueId}`);
                 this.editor = null;
             }
         },
