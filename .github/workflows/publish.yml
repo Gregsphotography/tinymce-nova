@@ -24,7 +24,7 @@ jobs:
         node-version: '18'
 
     - name: Install Composer dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
+      run: COMPOSER=composer-ci.json composer install --prefer-dist --no-progress --no-suggest
 
     - name: Install NPM dependencies
       run: npm ci
