@@ -28,7 +28,7 @@ git init
 git add .
 git commit -m "Initial commit"
 git branch -M main
-git remote add origin https://github.com/yourusername/tinymce-nova.git
+git remote add origin https://github.com/gregsphotography/tinymce-nova.git
 git push -u origin main
 ```
 
@@ -57,7 +57,7 @@ composer test
 
 1. Go to [Packagist](https://packagist.org)
 2. Sign up with your GitHub account
-3. Submit your package URL: `https://github.com/yourusername/tinymce-nova`
+3. Submit your package URL: `https://github.com/gregsphotography/tinymce-nova`
 
 ### 2. Set Up GitHub Secrets
 
@@ -159,7 +159,7 @@ Use semantic versioning:
 
 ### Getting Help
 
-- Check the [Issues](https://github.com/yourusername/tinymce-nova/issues) page
+- Check the [Issues](https://github.com/gregsphotography/tinymce-nova/issues) page
 - Create a new issue with detailed information
 - Include PHP version, Laravel version, and error messages
 
