@@ -359,7 +359,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Security
 
-If you discover any security related issues, please email security@yourdomain.com instead of using the issue tracker.
+If you discover any security related issues, please email security@gbrown.ch instead of using the issue tracker.
 
 ## Credits
 
