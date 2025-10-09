@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-10-09
+
+### Added
+- **Multiple TinyMCE instances support** - Fixed issue where only one TinyMCE field would load per page
+- Unique ID generation for each editor instance
+- Proper editor initialization with conflict prevention
+- Enhanced error handling and debugging
+
+### Fixed
+- Multiple TinyMCE fields now work correctly on the same page
+- Editor initialization conflicts resolved
+- Improved DOM element checking before initialization
+- Better cleanup when components are destroyed
+
+## [1.0.0] - 2025-10-09
+
 ### Added
 - Initial release
 - TinyMCE field for Laravel Nova
@@ -17,18 +33,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Paste handling with image support
 - Comprehensive test coverage
 - Laravel Package Tools integration
-
-### Changed
-- Nothing
-
-### Deprecated
-- Nothing
-
-### Removed
-- Nothing
-
-### Fixed
-- Nothing
-
-### Security
-- Nothing

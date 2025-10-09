@@ -1,5 +1,6 @@
 {
     "name": "gregsphotography/tinymce-nova",
+    "version": "1.1.0",
     "description": "A Laravel Nova field that integrates TinyMCE editor with your local TinyMCE installation.",
     "keywords": [
         "laravel",

@@ -1,5 +1,6 @@
 <template>
-    <div v-html="field.value"></div>
+    <div v-if="field.value" v-html="field.value"></div>
+    <div v-else class="text-gray-500 italic">No content</div>
 </template>
 
 <script>

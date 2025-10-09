@@ -15,6 +15,11 @@ final class Tinymce extends Field
     use SupportsDependentFields;
 
     public $component = 'tinymce';
+    
+    /**
+     * The field's component for detail view.
+     */
+    public $detailComponent = 'text';
 
     public function __construct($name, $attribute = null, callable $resolveCallback = null)
     {
@@ -142,5 +147,16 @@ final class Tinymce extends Field
     public function version(string $version): self
     {
         return $this->withMeta(['version' => $version]);
+    }
+
+    /**
+     * Resolve the field's value for display.
+     */
+    public function resolveForDisplay($resource, $attribute = null)
+    {
+        $value = parent::resolveForDisplay($resource, $attribute);
+        
+        // Strip HTML tags for display in detail view
+        return strip_tags($value);
     }
 }
