@@ -87,4 +87,53 @@ final class TinymceFieldTest extends TestCase
         $this->assertEquals($options['content_css'], $field->meta['content_css']);
         $this->assertEquals($options['body_class'], $field->meta['body_class']);
     }
+
+    public function test_can_use_local_source(): void
+    {
+        $field = Tinymce::make('Content')->useLocal();
+
+        $this->assertEquals('local', $field->meta['source']);
+    }
+
+    public function test_can_use_cdn_source(): void
+    {
+        $field = Tinymce::make('Content')->useCdn();
+
+        $this->assertEquals('cdn', $field->meta['source']);
+    }
+
+    public function test_can_set_license_key(): void
+    {
+        $field = Tinymce::make('Content')->licenseKey('commercial-license');
+
+        $this->assertEquals('commercial-license', $field->meta['license_key']);
+    }
+
+    public function test_can_set_api_key(): void
+    {
+        $field = Tinymce::make('Content')->apiKey('api-key-123');
+
+        $this->assertEquals('api-key-123', $field->meta['api_key']);
+    }
+
+    public function test_can_set_base_url(): void
+    {
+        $field = Tinymce::make('Content')->baseUrl('/custom-tinymce');
+
+        $this->assertEquals('/custom-tinymce', $field->meta['base_url']);
+    }
+
+    public function test_can_set_script_path(): void
+    {
+        $field = Tinymce::make('Content')->scriptPath('/js/custom/tinymce.min.js');
+
+        $this->assertEquals('/js/custom/tinymce.min.js', $field->meta['script_path']);
+    }
+
+    public function test_can_set_version(): void
+    {
+        $field = Tinymce::make('Content')->version('6');
+
+        $this->assertEquals('6', $field->meta['version']);
+    }
 }

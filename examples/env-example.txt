@@ -1,0 +1,19 @@
+# TinyMCE Nova Configuration Examples
+
+# Choose TinyMCE source: 'local' or 'cdn'
+TINYMCE_SOURCE=local
+
+# For Local TinyMCE Installation
+TINYMCE_LOCAL_URL=/tinymce
+TINYMCE_SCRIPT_PATH=/js/tinymce/tinymce.min.js
+TINYMCE_LICENSE_KEY=gpl
+
+# For CDN TinyMCE Installation
+TINYMCE_CDN_URL=https://cdn.tiny.cloud/1
+TINYMCE_API_KEY=your-api-key-here
+TINYMCE_VERSION=7
+
+# Image Upload Settings
+TINYMCE_IMAGE_HANDLER=laravel
+TINYMCE_UPLOAD_PATH=storage/tinymce
+TINYMCE_MAX_FILE_SIZE=2MB

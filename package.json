@@ -21,7 +21,6 @@
   },
   "devDependencies": {
     "laravel-mix": "^6.0.49",
-    "laravel-nova-devtool": "^1.7",
     "lodash": "^4.17.21",
     "postcss": "^8.4.31",
     "vue-loader": "^17.0.0",
@@ -30,10 +29,10 @@
   "dependencies": {},
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/tinymce-nova.git"
+    "url": "https://github.com/gregsphotography/tinymce-nova.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/tinymce-nova/issues"
+    "url": "https://github.com/gregsphotography/tinymce-nova/issues"
   },
-  "homepage": "https://github.com/yourusername/tinymce-nova#readme"
+  "homepage": "https://github.com/gregsphotography/tinymce-nova#readme"
 }

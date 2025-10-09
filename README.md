@@ -1,9 +1,9 @@
 # TinyMCE Field for Laravel Nova
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/greg/tinymce-nova.svg?style=flat-square)](https://packagist.org/packages/greg/tinymce-nova)
-[![Total Downloads](https://img.shields.io/packagist/dt/greg/tinymce-nova.svg?style=flat-square)](https://packagist.org/packages/greg/tinymce-nova)
-[![Tests](https://github.com/yourusername/tinymce-nova/workflows/Tests/badge.svg)](https://github.com/yourusername/tinymce-nova/actions)
-[![License](https://img.shields.io/packagist/l/greg/tinymce-nova.svg?style=flat-square)](https://packagist.org/packages/greg/tinymce-nova)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/gregsphotography/tinymce-nova.svg?style=flat-square)](https://packagist.org/packages/gregsphotography/tinymce-nova)
+[![Total Downloads](https://img.shields.io/packagist/dt/gregsphotography/tinymce-nova.svg?style=flat-square)](https://packagist.org/packages/gregsphotography/tinymce-nova)
+[![Tests](https://github.com/gregsphotography/tinymce-nova/workflows/Tests/badge.svg)](https://github.com/gregsphotography/tinymce-nova/actions)
+[![License](https://img.shields.io/packagist/l/gregsphotography/tinymce-nova.svg?style=flat-square)](https://packagist.org/packages/gregsphotography/tinymce-nova)
 
 A custom Laravel Nova field that integrates TinyMCE editor with your local TinyMCE installation.
 
@@ -23,7 +23,68 @@ A custom Laravel Nova field that integrates TinyMCE editor with your local TinyM
 You can install the package via Composer:
 
 ```bash
-composer require greg/tinymce-nova
+composer require gregsphotography/tinymce-nova
+```
+
+### Publish Configuration
+
+After installation, publish the configuration file:
+
+```bash
+php artisan vendor:publish --provider="Greg\TinymceNova\TinymceNovaServiceProvider" --tag="config"
+```
+
+This will create `config/tinymce-nova.php` with all available configuration options.
+
+## Configuration
+
+### Environment Variables
+
+Add these to your `.env` file:
+
+```env
+# TinyMCE Source (local or cdn)
+TINYMCE_SOURCE=local
+
+# For Local Installation
+TINYMCE_LOCAL_URL=/tinymce
+TINYMCE_SCRIPT_PATH=/js/tinymce/tinymce.min.js
+TINYMCE_LICENSE_KEY=gpl
+
+# For CDN Installation
+TINYMCE_CDN_URL=https://cdn.tiny.cloud/1
+TINYMCE_API_KEY=your-api-key-here
+TINYMCE_VERSION=7
+```
+
+### Configuration File
+
+The published `config/tinymce-nova.php` file contains all available options:
+
+```php
+return [
+    'source' => env('TINYMCE_SOURCE', 'local'),
+    
+    'local' => [
+        'base_url' => env('TINYMCE_LOCAL_URL', '/tinymce'),
+        'script_path' => env('TINYMCE_SCRIPT_PATH', '/js/tinymce/tinymce.min.js'),
+        'license_key' => env('TINYMCE_LICENSE_KEY', 'gpl'),
+    ],
+    
+    'cdn' => [
+        'base_url' => env('TINYMCE_CDN_URL', 'https://cdn.tiny.cloud/1'),
+        'api_key' => env('TINYMCE_API_KEY', 'no-api-key'),
+        'license_key' => env('TINYMCE_LICENSE_KEY', 'gpl'),
+        'version' => env('TINYMCE_VERSION', '7'),
+    ],
+    
+    'defaults' => [
+        'height' => 400,
+        'toolbar' => 'undo redo | blocks | bold italic...',
+        'plugins' => 'lists link image code table',
+        // ... more options
+    ],
+];
 ```
 
 ## Usage
@@ -46,6 +107,25 @@ Tinymce::make('Content')
     ->height(500)
     ->plugins(['lists', 'link', 'image', 'paste', 'code', 'table', 'fullscreen', 'wordcount'])
     ->toolbar('undo redo | blocks | bold italic | link image')
+```
+
+### Using CDN
+
+```php
+Tinymce::make('Content')
+    ->useCdn()
+    ->apiKey('your-api-key')
+    ->licenseKey('your-license-key')
+```
+
+### Using Local Installation
+
+```php
+Tinymce::make('Content')
+    ->useLocal()
+    ->baseUrl('/tinymce')
+    ->scriptPath('/js/tinymce/tinymce.min.js')
+    ->licenseKey('gpl') // or your commercial license
 ```
 
 ## Available Methods
@@ -107,6 +187,55 @@ Tinymce::make('Content')->options([
     'content_css' => '/css/custom-editor.css',
     'body_class' => 'my-editor-class'
 ])
+```
+
+### `useLocal()`
+Force the field to use local TinyMCE installation.
+
+```php
+Tinymce::make('Content')->useLocal()
+```
+
+### `useCdn()`
+Force the field to use TinyMCE from CDN.
+
+```php
+Tinymce::make('Content')->useCdn()
+```
+
+### `licenseKey(string $licenseKey)`
+Set the TinyMCE license key (GPL or commercial).
+
+```php
+Tinymce::make('Content')->licenseKey('your-license-key')
+```
+
+### `apiKey(string $apiKey)`
+Set the TinyMCE API key for CDN usage.
+
+```php
+Tinymce::make('Content')->apiKey('your-api-key')
+```
+
+### `baseUrl(string $baseUrl)`
+Set the base URL for TinyMCE (local or CDN).
+
+```php
+Tinymce::make('Content')->baseUrl('/tinymce')
+```
+
+### `scriptPath(string $scriptPath)`
+Set the script path for local TinyMCE installation.
+
+```php
+Tinymce::make('Content')->scriptPath('/js/tinymce/tinymce.min.js')
+```
+
+### `version(string $version)`
+Set the TinyMCE version for CDN usage.
+
+```php
+Tinymce::make('Content')->version('7')
 ```
 
 ## Available Plugins
@@ -230,12 +359,12 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## Security
 
-If you discover any security related issues, please email security@yourdomain.com instead of using the issue tracker.
+If you discover any security related issues, please email security@gbrown.ch instead of using the issue tracker.
 
 ## Credits
 
-- [Greg](https://github.com/yourusername)
-- [All Contributors](../../contributors)
+- [Greg](https://github.com/gregsphotography)
+- [All Contributors](https://github.com/gregsphotography/tinymce-nova/contributors)
 
 ## License
 

@@ -1,5 +1,5 @@
 {
-    "name": "greg/tinymce-nova",
+    "name": "gregsphotography/tinymce-nova",
     "description": "A Laravel Nova field that integrates TinyMCE editor with your local TinyMCE installation.",
     "keywords": [
         "laravel",
@@ -17,9 +17,14 @@
     },
     "require-dev": {
         "orchestra/testbench": "^8.0|^9.0|^10.0",
-        "phpunit/phpunit": "^10.0|^11.0",
-        "spatie/laravel-package-tools": "^1.92"
+        "phpunit/phpunit": "^10.0|^11.0"
     },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://nova.laravel.com"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Greg\\TinymceNova\\": "src/"
