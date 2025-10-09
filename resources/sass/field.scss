@@ -1,0 +1,15 @@
+// TinyMCE field styles
+.tinymce-field {
+    .tox-tinymce {
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+    }
+    
+    .tox-editor-header {
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .tox-toolbar__primary {
+        background: #f9fafb;
+    }
+}

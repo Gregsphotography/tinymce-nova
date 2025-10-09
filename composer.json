@@ -1,0 +1,56 @@
+{
+    "name": "gregsphotography/tinymce-nova",
+    "description": "A Laravel Nova field that integrates TinyMCE editor with your local TinyMCE installation.",
+    "keywords": [
+        "laravel",
+        "nova",
+        "tinymce",
+        "editor",
+        "wysiwyg"
+    ],
+    "license": "MIT",
+    "type": "library",
+    "require": {
+        "php": "^8.1",
+        "illuminate/support": "^10.0|^11.0|^12.0",
+        "laravel/nova": "^5.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.0|^9.0|^10.0",
+        "phpunit/phpunit": "^10.0|^11.0",
+        "spatie/laravel-package-tools": "^1.92"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://nova.laravel.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Greg\\TinymceNova\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Greg\\TinymceNova\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Greg\\TinymceNova\\TinymceNovaServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "scripts": {
+        "test": "phpunit",
+        "test-coverage": "phpunit --coverage-html coverage",
+        "test-nova": "phpunit --testsuite=Feature"
+    }
+}
