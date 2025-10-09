@@ -152,11 +152,11 @@ final class Tinymce extends Field
     /**
      * Resolve the field's value for display.
      */
-    public function resolveForDisplay($resource, $attribute = null)
+    public function resolveForDisplay($resource, ?string $attribute = null): void
     {
-        $value = parent::resolveForDisplay($resource, $attribute);
+        parent::resolveForDisplay($resource, $attribute);
         
         // Strip HTML tags for display in detail view
-        return strip_tags($value);
+        $this->value = strip_tags($this->value);
     }
 }
