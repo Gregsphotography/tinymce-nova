@@ -34,8 +34,14 @@ jobs:
 
     - name: Publish to Packagist
       run: |
-        composer config http-basic.repo.packagist.com ${{ secrets.PACKAGIST_USERNAME }} ${{ secrets.PACKAGIST_TOKEN }}
-        composer publish
+        if [ -n "${{ secrets.PACKAGIST_USERNAME }}" ] && [ -n "${{ secrets.PACKAGIST_TOKEN }}" ]; then
+          composer config http-basic.repo.packagist.com ${{ secrets.PACKAGIST_USERNAME }} ${{ secrets.PACKAGIST_TOKEN }}
+          composer publish
+        else
+          echo "Packagist credentials not configured. Please set PACKAGIST_USERNAME and PACKAGIST_TOKEN secrets."
+          echo "Or publish manually: composer publish"
+          exit 1
+        fi
       env:
         PACKAGIST_USERNAME: ${{ secrets.PACKAGIST_USERNAME }}
         PACKAGIST_TOKEN: ${{ secrets.PACKAGIST_TOKEN }}
