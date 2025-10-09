@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Greg\TinymceNova\Tests;
 
 use Orchestra\Testbench\TestCase as Orchestra;
-use Greg\TinymceNova\TinymceNovaServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
@@ -17,18 +16,13 @@ abstract class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            TinymceNovaServiceProvider::class,
+            // No providers needed for basic tests
         ];
     }
 
     protected function getEnvironmentSetUp($app)
     {
-        // Setup default database to use sqlite :memory:
-        $app['config']->set('database.default', 'testbench');
-        $app['config']->set('database.connections.testbench', [
-            'driver'   => 'sqlite',
-            'database' => ':memory:',
-            'prefix'   => '',
-        ]);
+        // Basic setup without Nova dependencies
+        $app['config']->set('app.key', 'base64:UTyp33Kr3a91bV7hZfD2y2bGTxcMxgrTisrM1M6+c+o=');
     }
 }
