@@ -36,7 +36,7 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: Install Composer dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest -c composer-ci.json
+      run: COMPOSER=composer-ci.json composer install --prefer-dist --no-progress --no-suggest
 
     - name: Install NPM dependencies
       run: npm ci
@@ -75,7 +75,7 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: Install Composer dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest -c composer-ci.json
+      run: COMPOSER=composer-ci.json composer install --prefer-dist --no-progress --no-suggest
 
     - name: Install NPM dependencies
       run: npm ci
