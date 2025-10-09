@@ -7,27 +7,28 @@ namespace Greg\TinymceNova;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Nova\Events\ServingNova;
 use Laravel\Nova\Nova;
-use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-final class TinymceNovaServiceProvider extends PackageServiceProvider
+final class TinymceNovaServiceProvider extends ServiceProvider
 {
-    public function configurePackage(Package $package): void
-    {
-        $package
-            ->name('tinymce-nova')
-            ->hasAssets()
-            ->hasViews()
-            ->hasConfigFile();
-    }
-
     public function boot(): void
     {
-        parent::boot();
+        // Publish config file
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__.'/../config/tinymce-nova.php' => config_path('tinymce-nova.php'),
+            ], 'config');
+        }
 
+        // Register Nova assets
         Nova::serving(function (ServingNova $event) {
             Nova::script('tinymce-nova', __DIR__.'/../dist/js/field.js');
             Nova::style('tinymce-nova', __DIR__.'/../dist/css/field.css');
         });
+    }
+
+    public function register(): void
+    {
+        // Merge config
+        $this->mergeConfigFrom(__DIR__.'/../config/tinymce-nova.php', 'tinymce-nova');
     }
 }
