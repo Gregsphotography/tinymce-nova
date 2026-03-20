@@ -1,0 +1,18 @@
+# Exclude development and testing files from distribution
+/tests export-ignore
+/.github export-ignore
+/.gitignore export-ignore
+/.gitattributes export-ignore
+/phpunit.xml export-ignore
+/webpack.mix.js export-ignore
+/package.json export-ignore
+/package-lock.json export-ignore
+/postcss.config.js export-ignore
+/resources export-ignore
+/examples export-ignore
+/scripts export-ignore
+/composer-ci.json export-ignore
+/test-package.php export-ignore
+/CONTRIBUTING.md export-ignore
+/SETUP.md export-ignore
+/CHANGELOG.md export-ignore
