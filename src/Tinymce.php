@@ -15,25 +15,21 @@ final class Tinymce extends Field
     use SupportsDependentFields;
 
     public $component = 'tinymce';
-    
-    /**
-     * The field's component for detail view.
-     */
-    public $detailComponent = 'text';
 
-    public function __construct($name, $attribute = null, callable $resolveCallback = null)
+    public function __construct($name, $attribute = null, ?callable $resolveCallback = null)
     {
         parent::__construct($name, $attribute, $resolveCallback);
 
         $this->withMeta($this->getDefaultConfig());
     }
 
-    protected function getDefaultConfig(): array
+    protected function getDefaultConfig(?string $source = null): array
     {
         $defaults = Config::get('tinymce-nova.defaults', []);
-        $source = Config::get('tinymce-nova.source', 'local');
-        
+        $source ??= Config::get('tinymce-nova.source', 'local');
+
         $config = [
+            'source' => $source,
             'height' => $defaults['height'] ?? 400,
             'toolbar' => $defaults['toolbar'] ?? 'undo redo | blocks | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | removeformat | code',
             'plugins' => $defaults['plugins'] ?? 'lists link image code table',
@@ -41,6 +37,8 @@ final class Tinymce extends Field
             'statusbar' => $defaults['statusbar'] ?? true,
             'branding' => $defaults['branding'] ?? false,
             'resize' => $defaults['resize'] ?? true,
+            'content_css' => $defaults['content_css'] ?? null,
+            'body_class' => $defaults['body_class'] ?? null,
         ];
 
         // Add source-specific configuration
@@ -85,7 +83,7 @@ final class Tinymce extends Field
         if (is_array($plugins)) {
             $plugins = implode(' ', $plugins);
         }
-        
+
         return $this->withMeta(['plugins' => $plugins]);
     }
 
@@ -116,12 +114,12 @@ final class Tinymce extends Field
 
     public function useLocal(): self
     {
-        return $this->withMeta(['source' => 'local']);
+        return $this->withMeta(array_intersect_key($this->getDefaultConfig('local'), array_flip(['source', 'base_url', 'script_path', 'license_key'])));
     }
 
     public function useCdn(): self
     {
-        return $this->withMeta(['source' => 'cdn']);
+        return $this->withMeta(array_intersect_key($this->getDefaultConfig('cdn'), array_flip(['source', 'base_url', 'api_key', 'version', 'license_key'])));
     }
 
     public function licenseKey(string $licenseKey): self
@@ -155,8 +153,10 @@ final class Tinymce extends Field
     public function resolveForDisplay($resource, ?string $attribute = null): void
     {
         parent::resolveForDisplay($resource, $attribute);
-        
-        // Strip HTML tags for display in detail view
-        $this->value = strip_tags($this->value);
+
+        $withLineBreaks = preg_replace('/<\/?(?:br|p|div|li|ul|ol|tr|h[1-6]|blockquote)\b[^>]*>/i', "\n", (string) $this->value);
+        $plainText = html_entity_decode(strip_tags($withLineBreaks), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $plainText = str_replace(["\r\n", "\r", "\u{00A0}"], ["\n", "\n", ' '], $plainText);
+        $this->value = trim(preg_replace('/\n[\t ]*\n+/', "\n", $plainText));
     }
 }

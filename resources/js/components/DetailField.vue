@@ -1,10 +1,14 @@
 <template>
-    <div v-if="field.value" v-html="field.value"></div>
-    <div v-else class="text-gray-500 italic">No content</div>
+    <PanelItem :index="index" :field="field">
+        <template #value>
+            <div v-if="field.value" class="tinymce-detail-content">{{ field.value }}</div>
+            <div v-else>No content</div>
+        </template>
+    </PanelItem>
 </template>
 
 <script>
 export default {
-    props: ['resourceName', 'resourceId', 'field'],
+    props: ['index', 'resource', 'resourceName', 'resourceId', 'field'],
 }
 </script>
