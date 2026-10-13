@@ -2,6 +2,7 @@
     <DefaultField :field="field" :errors="errors">
         <template #field>
             <textarea
+                ref="textarea"
                 :id="uniqueId"
                 :name="field.attribute"
                 :value="value"
@@ -10,12 +11,15 @@
                 class="w-full form-control form-input form-input-bordered"
                 :class="errorClasses"
             ></textarea>
+            <p v-if="loadError" role="alert">The rich text editor could not load. You can still edit and save the HTML in this text area.</p>
         </template>
     </DefaultField>
 </template>
 
 <script>
 import { FormField, HandlesValidationErrors } from 'laravel-nova'
+import { markRaw } from 'vue'
+import { loadTinyMCE, editorOptions } from '../tinymce'
 
 export default {
     mixins: [FormField, HandlesValidationErrors],
@@ -23,119 +27,95 @@ export default {
     data() {
         return {
             editor: null,
-            uniqueId: null,
-        };
+            editorReady: false,
+            disposed: false,
+            loadError: false,
+            uniqueId: `tinymce_${Math.random().toString(36).slice(2)}`,
+        }
     },
 
     mounted() {
-        // Generate unique ID for this editor instance
-        this.uniqueId = `${this.field.attribute}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        console.log(`TinyMCE component mounted with ID: ${this.uniqueId}`);
-        this.initializeEditor();
+        this.initializeEditor()
     },
 
     beforeUnmount() {
-        this.destroyEditor();
+        this.disposed = true
+        this.destroyEditor()
+    },
+
+    watch: {
+        value(value) {
+            if (this.editorReady && this.editor.getContent() !== (value || '')) {
+                this.editor.setContent(value || '')
+            }
+        },
     },
 
     methods: {
-        initializeEditor() {
-            if (typeof tinymce === 'undefined') {
-                this.loadTinyMCE().then(() => {
-                    this.initEditor();
-                });
-            } else {
-                this.initEditor();
-            }
-        },
-        
-        loadTinyMCE() {
-            return new Promise((resolve) => {
-                const script = document.createElement('script');
-                script.src = '/tinymce/js/tinymce/tinymce.min.js';
-                script.onload = resolve;
-                document.head.appendChild(script);
-            });
-        },
-        
-        initEditor() {
-            // Add a small delay to ensure DOM is ready and prevent conflicts
-            setTimeout(() => {
-                this.initSingleEditor();
-            }, 100);
-        },
-
-        initSingleEditor() {
-            console.log(`Initializing TinyMCE for ID: ${this.uniqueId}`);
-            
-            // Check if the element exists
-            const element = document.getElementById(this.uniqueId);
-            if (!element) {
-                console.warn(`TinyMCE element with ID ${this.uniqueId} not found`);
-                return;
-            }
-            
-            console.log(`Element found, proceeding with initialization`);
-
-            const config = {
-                selector: `#${this.uniqueId}`,
-                license_key: this.field.license_key || 'gpl',
-                height: this.field.height || 400,
-                toolbar: this.field.toolbar || 'undo redo | blocks | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | removeformat | code | fullscreen',
-                plugins: this.field.plugins || 'lists link image paste code table fullscreen wordcount',
-                menubar: this.field.menubar !== false,
-                statusbar: this.field.statusbar !== false,
-                branding: this.field.branding !== false,
-                resize: this.field.resize !== false,
-                content_css: this.field.content_css,
-                body_class: this.field.body_class,
-                placeholder: this.field.placeholder,
-                paste_as_text: false,
-                paste_data_images: true,
-                relative_urls: false,
-                remove_script_host: false,
-                convert_urls: true,
-                // Unique instance settings for multiple editors
-                instance_id: this.uniqueId,
-                init_instance_callback: (editor) => {
-                    this.editor = editor;
-                    editor.on('change keyup paste', () => {
-                        this.value = editor.getContent();
-                    });
-                },
-                setup: (editor) => {
-                    editor.on('init', () => {
-                        if (this.value) {
-                            editor.setContent(this.value);
+        async initializeEditor() {
+            try {
+                await this.$nextTick()
+                const tiny = await loadTinyMCE(this.field)
+                if (this.disposed) return
+                const editors = await tiny.init({
+                    ...editorOptions(this.field),
+                    target: this.$refs.textarea,
+                    setup: (editor) => {
+                        if (this.disposed) {
+                            editor.remove()
+                            return
                         }
-                    });
+                        this.editor = markRaw(editor)
+                        editor.on('init', () => {
+                            if (this.disposed) {
+                                editor.remove()
+                                return
+                            }
+                            editor.setContent(this.value || '')
+                            this.editorReady = true
+                        })
+                        editor.on('input change undo redo SetContent blur', () => {
+                            if (this.editorReady && !this.disposed) {
+                                this.updateValue(editor.getContent())
+                            }
+                        })
+                    },
+                })
+                if (this.disposed) {
+                    editors.forEach(editor => editor.remove())
                 }
-            };
-            
-            // Check if editor already exists
-            if (tinymce.get(this.uniqueId)) {
-                console.log(`TinyMCE editor ${this.uniqueId} already exists`);
-                return;
+            } catch (error) {
+                if (!this.disposed) {
+                    this.destroyEditor()
+                    this.loadError = true
+                }
             }
-
-            // Initialize the editor
-            tinymce.init(config);
         },
-        
-        destroyEditor() {
-            if (this.editor) {
-                tinymce.remove(`#${this.uniqueId}`);
-                this.editor = null;
-            }
+
+        updateValue(value) {
+            this.value = value
+            this.emitFieldValueChange(this.fieldAttribute, value)
+            this.$emit('field-changed')
         },
 
         handleChange(event) {
-            this.value = event.target.value;
+            this.updateValue(event.target.value)
+        },
+
+        destroyEditor() {
+            this.editorReady = false
+            if (this.editor) {
+                this.editor.remove()
+                this.editor = null
+            }
         },
 
         fill(formData) {
+            if (this.editorReady) {
+                this.value = this.editor.getContent()
+            }
             this.fillIfVisible(formData, this.fieldAttribute, this.value || '')
-        }
-    }
-};
+        },
+    },
+}
 </script>

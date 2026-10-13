@@ -24,4 +24,5 @@ final class TinymceFieldTest extends TestCase
         $provider = new \Greg\TinymceNova\TinymceNovaServiceProvider(app());
         $this->assertInstanceOf(\Greg\TinymceNova\TinymceNovaServiceProvider::class, $provider);
     }
+
 }

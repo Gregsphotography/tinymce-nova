@@ -17,7 +17,8 @@
     "watch": "mix watch",
     "watch-poll": "mix watch -- --watch-options-poll=1000",
     "prod": "npm run production",
-    "production": "mix --production"
+    "production": "mix --production",
+    "test:js": "node --test tests/js/*.test.mjs"
   },
   "devDependencies": {
     "laravel-mix": "^6.0.49",

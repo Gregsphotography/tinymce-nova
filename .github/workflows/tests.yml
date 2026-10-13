@@ -41,6 +41,9 @@ jobs:
     - name: Install NPM dependencies
       run: npm ci
 
+    - name: Test editor lifecycle
+      run: npm run test:js
+
     - name: Build assets
       run: npm run production
 
@@ -79,6 +82,9 @@ jobs:
 
     - name: Install NPM dependencies
       run: npm ci
+
+    - name: Test editor lifecycle
+      run: npm run test:js
 
     - name: Build assets
       run: npm run production
